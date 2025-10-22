@@ -1,0 +1,43 @@
+package com.Ecom.EcomEngineAPI.controller;
+
+import com.Ecom.EcomEngineAPI.dto.AuthResponse;
+import com.Ecom.EcomEngineAPI.dto.LoginRequest;
+import com.Ecom.EcomEngineAPI.dto.RegisterRequest;
+import com.Ecom.EcomEngineAPI.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class AuthController {
+    private final AuthService authService;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
+        AuthResponse res = authService.register(req);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
+        AuthResponse res = authService.login(req);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+        String h = request.getHeader("Authorization");
+        if (h == null || !h.startsWith("Bearer ")) return ResponseEntity.badRequest().body("Missing Authorization header");
+        String oldToken = h.substring(7);
+        AuthResponse res = authService.refresh(oldToken);
+        return ResponseEntity.ok(res);
+    }
+
+
+}
