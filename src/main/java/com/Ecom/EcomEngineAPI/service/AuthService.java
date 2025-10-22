@@ -24,7 +24,14 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest req) {
         if (userRepository.existsByEmail(req.getEmail())) {
-            return AuthResponse.builder().message("Email already registered").build();
+            return AuthResponse.builder()
+                    .username(req.getUsername())
+                    .email(req.getEmail())
+                    .phone(req.getPhone())
+                    .role(String.valueOf(req.getRole()))       // ✅ Added here
+                    .message("User already exists")
+                    .isActive(true)
+                    .build();
         }
 
         Role role = req.getRole() != null ? req.getRole() : Role.USER;
@@ -41,7 +48,15 @@ public class AuthService {
                 .build();
 
         userRepository.save(u);
-        return AuthResponse.builder().message("Registration successful").build();
+        return AuthResponse.builder()
+                .userId(u.getUserId())
+                .username(u.getUsername())
+                .email(u.getEmail())
+                .phone(u.getPhone())
+                .role(String.valueOf(u.getRole()))       // ✅ Added here
+                .isActive(u.isActive())
+                .message("User registration successful")
+                .build();
     }
     public AuthResponse login(LoginRequest req) {
         User u = userRepository.findByEmail(req.getEmail())
@@ -67,13 +82,31 @@ public class AuthService {
         claims.put("isActive", u.isActive());
 
         String token = jwtHelper.generateToken(claims, u.getEmail());
-        return AuthResponse.builder().token(token).message("Login successful").build();
+        return AuthResponse.builder()
+                .token(token)
+                .userId(u.getUserId())
+                .username(u.getUsername())
+                .email(u.getEmail())
+                .phone(u.getPhone())
+                .role(String.valueOf(u.getRole()))       // ✅ Added here
+                .isActive(u.isActive())
+                .build();
     }
-    public AuthResponse refresh(String oldToken) {
-        if (!jwtHelper.validateToken(oldToken)) {
-            throw new RuntimeException("Invalid/expired token");
-        }
-        String newToken = jwtHelper.refreshToken(oldToken);
-        return AuthResponse.builder().token(newToken).message("Token refreshed").build();
-    }
+//    public AuthResponse refresh(String oldToken) {
+//        if (!jwtHelper.validateToken(oldToken)) {
+//            throw new RuntimeException("Invalid/expired token");
+//        }
+//        String newToken = jwtHelper.refreshToken(oldToken);
+//        return AuthResponse.builder()
+//                .token(newToken)
+//                .userId(u.getUserId())
+//                .username(u.getUsername())
+//                .email(u.getEmail())
+//                .phone(u.getPhone())
+//                .role(String.valueOf(u.getRole()))       // ✅ Added here
+//                .isActive(u.isActive())
+//                .build();
+//    }
+
+
 }

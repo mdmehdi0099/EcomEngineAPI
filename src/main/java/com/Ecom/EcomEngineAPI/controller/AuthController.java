@@ -30,14 +30,14 @@ public class AuthController {
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
-        String h = request.getHeader("Authorization");
-        if (h == null || !h.startsWith("Bearer ")) return ResponseEntity.badRequest().body("Missing Authorization header");
-        String oldToken = h.substring(7);
-        AuthResponse res = authService.refresh(oldToken);
-        return ResponseEntity.ok(res);
-    }
+//    @PostMapping("/refresh-token")
+//    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+//        String h = request.getHeader("Authorization");
+//        if (h == null || !h.startsWith("Bearer ")) return ResponseEntity.badRequest().body("Missing Authorization header");
+//        String oldToken = h.substring(7);
+//        AuthResponse res = authService.refresh(oldToken);
+//        return ResponseEntity.ok(res);
+//    }
 
 
 }
