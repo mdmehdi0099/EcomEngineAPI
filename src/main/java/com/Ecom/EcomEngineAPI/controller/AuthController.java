@@ -6,6 +6,7 @@ import com.Ecom.EcomEngineAPI.dto.RegisterRequest;
 import com.Ecom.EcomEngineAPI.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,12 @@ public class AuthController {
         AuthResponse res = authService.register(req);
         return ResponseEntity.ok(res);
     }
+    //registerAdminUser
+    @PostMapping("/registerAdminUser")
+    public ResponseEntity<?> registerAdminUser(@RequestBody RegisterRequest request) {
+        AuthResponse response = authService.registerAdminUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
@@ -38,6 +45,8 @@ public class AuthController {
 //        AuthResponse res = authService.refresh(oldToken);
 //        return ResponseEntity.ok(res);
 //    }
+
+
 
 
 }
