@@ -26,10 +26,11 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/free/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/agent/**").hasAnyRole("AGENT", "ADMIN")
-                        .requestMatchers("/seller/**").hasAnyRole("SELLER", "ADMIN")
-                        .requestMatchers("/user/**").hasAnyRole("USER", "AGENT","SELLER", "ADMIN")
+                        .requestMatchers("/seller/**").hasAnyRole("SELLER", "AGENT", "ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("CUSTOMER", "AGENT","SELLER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
