@@ -25,7 +25,7 @@ public class AdminController {
     }
 
     //registerAgentUser
-    @PostMapping("/registerSellerUser")
+    @PostMapping("/registerAgentUser")
     public ResponseEntity<?> registerAgentUser(@RequestBody RegisterRequest request) {
         AuthResponse response = authService.registerAgentUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
