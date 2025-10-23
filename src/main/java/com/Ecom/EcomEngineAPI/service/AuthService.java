@@ -34,7 +34,7 @@ public class AuthService {
                     .build();
         }
 
-        Role role = req.getRole() != null ? req.getRole() : Role.USER;
+        Role role = req.getRole() != null ? req.getRole() : Role.CUSTOMER;
 
         User u = User.builder()
                 .username(req.getUsername())
@@ -45,6 +45,7 @@ public class AuthService {
                 .isEmailVerified(false)
                 .isActive(true)
                 .createdAt(LocalDateTime.now())
+                .isPhoneVerified(false)
                 .build();
 
         userRepository.save(u);
@@ -79,6 +80,78 @@ public class AuthService {
                 .isEmailVerified(false)
                 .isActive(true)
                 .createdAt(LocalDateTime.now())
+                .isPhoneVerified(false)
+                .build();
+
+        userRepository.save(u);
+        return AuthResponse.builder()
+                .userId(u.getUserId())
+                .username(u.getUsername())
+                .email(u.getEmail())
+                .phone(u.getPhone())
+                .role(String.valueOf(u.getRole()))       // ✅ Added here
+                .isActive(u.isActive())
+                .message("Admin user registration successful")
+                .build();
+    }
+    public AuthResponse registerSellerUser(RegisterRequest req) {
+        if (userRepository.existsByEmail(req.getEmail())) {
+            return AuthResponse.builder()
+                    .username(req.getUsername())
+                    .email(req.getEmail())
+                    .phone(req.getPhone())
+                    .role(String.valueOf(req.getRole()))       // ✅ Added here
+                    .message("User already exists")
+                    .isActive(true)
+                    .build();
+        }
+        //Role role = req.getRole() != null ? req.getRole() : Role.USER;
+        User u = User.builder()
+                .username(req.getUsername())
+                .email(req.getEmail())
+                .phone(req.getPhone())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .role(Role.valueOf("SELLER"))
+                .isEmailVerified(false)
+                .isActive(true)
+                .createdAt(LocalDateTime.now())
+                .isPhoneVerified(false)
+                .build();
+
+        userRepository.save(u);
+        return AuthResponse.builder()
+                .userId(u.getUserId())
+                .username(u.getUsername())
+                .email(u.getEmail())
+                .phone(u.getPhone())
+                .role(String.valueOf(u.getRole()))       // ✅ Added here
+                .isActive(u.isActive())
+                .message("Admin user registration successful")
+                .build();
+    }
+
+    public AuthResponse registerAgentUser(RegisterRequest req) {
+        if (userRepository.existsByEmail(req.getEmail())) {
+            return AuthResponse.builder()
+                    .username(req.getUsername())
+                    .email(req.getEmail())
+                    .phone(req.getPhone())
+                    .role(String.valueOf(req.getRole()))       // ✅ Added here
+                    .message("User already exists")
+                    .isActive(true)
+                    .build();
+        }
+        //Role role = req.getRole() != null ? req.getRole() : Role.USER;
+        User u = User.builder()
+                .username(req.getUsername())
+                .email(req.getEmail())
+                .phone(req.getPhone())
+                .password(passwordEncoder.encode(req.getPassword()))
+                .role(Role.valueOf("AGENT"))
+                .isEmailVerified(false)
+                .isActive(true)
+                .createdAt(LocalDateTime.now())
+                .isPhoneVerified(false)
                 .build();
 
         userRepository.save(u);

@@ -1,5 +1,5 @@
 package com.Ecom.EcomEngineAPI.entity;
 
 public enum Role {
-    ADMIN, AGENT, SELLER, USER
+    ADMIN, AGENT, SELLER, CUSTOMER
 }

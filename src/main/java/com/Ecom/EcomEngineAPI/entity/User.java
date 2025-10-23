@@ -36,11 +36,22 @@ public class User {
     private Role role;
 
     private boolean isEmailVerified = false;
+
+    private boolean isPhoneVerified = false;
+
     private boolean isActive = true;
+    private String deactivationReason;
+    private LocalDateTime deactivatedAt;
+
+    private String reActivationReason;
+    private LocalDateTime reActivatedAt;
+
+    private Integer otp;
+
+
 
     @CreatedDate
     private LocalDateTime createdAt;
-
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
