@@ -42,20 +42,20 @@ public class AuthController {
         return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/forget-password")
+    @PostMapping("/forgetPassword")
     public ResponseEntity<ForgetPasswordResponseDTO> forgetPassword(@RequestBody ForgetPasswordRequestDTO forgetPasswordRequestDTO) {
         String email = forgetPasswordRequestDTO.getEmail();
         ForgetPasswordResponseDTO response = emailService.sendForgetPasswordEmail(email);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/resetPassword")
     public ResponseEntity<ResetPasswordResponseDTO> resetPassword(@RequestBody ResetPasswordRequestDTO resetPasswordRequestDTO) {
         ResetPasswordResponseDTO response = emailService.resetPassword(resetPasswordRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-//    @PostMapping("/refresh-token")
+//    @PostMapping("/refreshToken")
 //    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
 //        String h = request.getHeader("Authorization");
 //        if (h == null || !h.startsWith("Bearer ")) return ResponseEntity.badRequest().body("Missing Authorization header");

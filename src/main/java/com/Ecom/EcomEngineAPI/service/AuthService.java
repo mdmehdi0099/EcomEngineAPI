@@ -34,7 +34,7 @@ public class AuthService {
                     .build();
         }
 
-        Role role = req.getRole() != null ? req.getRole() : Role.USER;
+        Role role = req.getRole() != null ? req.getRole() : Role.CUSTOMER;
 
         User u = User.builder()
                 .username(req.getUsername())
