@@ -14,4 +14,5 @@ public class UserActivationDeactivationRequestDTO {
     private String email;
     private boolean active;
     private String deactivationReason;
+    private String reActivationReason;
 }
