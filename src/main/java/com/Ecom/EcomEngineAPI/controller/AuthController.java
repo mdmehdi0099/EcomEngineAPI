@@ -22,25 +22,23 @@ public class AuthController {
     @Autowired
     private EmailService emailService;
 
+    //register customer
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
-        AuthResponse res = authService.register(req);
-        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+        return authService.register(req);
     }
 
     //registerAdminUser
     @PostMapping("/registerAdminUser")
     public ResponseEntity<?> registerAdminUser(@RequestBody RegisterRequest request) {
-        AuthResponse response = authService.registerAdminUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return authService.registerAdminUser(request);
     }
 
 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-        AuthResponse res = authService.login(req);
-        return ResponseEntity.ok(res);
+        return authService.login(req);
     }
 
     @PostMapping("/forgetPassword")
@@ -52,8 +50,7 @@ public class AuthController {
 
     @PostMapping("/resetPassword")
     public ResponseEntity<ResetPasswordResponseDTO> resetPassword(@RequestBody ResetPasswordRequestDTO resetPasswordRequestDTO) {
-        ResetPasswordResponseDTO response = emailService.resetPassword(resetPasswordRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return emailService.resetPassword(resetPasswordRequestDTO);
     }
 
 //    @PostMapping("/refreshToken")

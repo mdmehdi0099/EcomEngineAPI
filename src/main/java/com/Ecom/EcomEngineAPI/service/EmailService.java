@@ -7,6 +7,8 @@ import com.Ecom.EcomEngineAPI.entity.User;
 import com.Ecom.EcomEngineAPI.repo.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +44,7 @@ public class EmailService {
     @Transactional
     public ForgetPasswordResponseDTO sendForgetPasswordEmail(String toEmail) {
         // ✅ 1. Check if user exists
-        Optional<User> userOptional = userRepository.findByEmail(toEmail);
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findByEmail(toEmail));
         if (userOptional.isEmpty()) {
             return ForgetPasswordResponseDTO.builder()
                     .Email(toEmail)
@@ -68,7 +70,7 @@ public class EmailService {
                 + "We received a request to reset your password.\n"
                 + "Your OTP for password reset is: " + code + "\n\n"
                 + "This OTP will expire in 10 minutes.\n\n"
-                + "Regards,\nTeam GraminSchool");
+                + "Regards,\nTeam EcomEngine");
 
         mailSender.send(message);
 
@@ -79,19 +81,36 @@ public class EmailService {
                 .build();
     }
 
-    public ResetPasswordResponseDTO resetPassword(ResetPasswordRequestDTO request) {
+    public ResponseEntity<ResetPasswordResponseDTO> resetPassword(ResetPasswordRequestDTO request) {
         // 1️⃣ Find user by email
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getEmail()));
-
+        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByEmail(request.getEmail()));
+        if (optionalUser.isEmpty()) {
+            ResetPasswordResponseDTO resetPasswordResponseDTO=ResetPasswordResponseDTO.builder()
+                    .email(request.getEmail())
+                    .message("User not found with email: "+request.getEmail())
+                    .otp(request.getOtp())
+                    .build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resetPasswordResponseDTO);
+        }
+        User user = userRepository.findByEmail(request.getEmail());
         // 2️⃣ Validate OTP
         if (user.getOtp() == null || !user.getOtp().equals(request.getOtp())) {
-            throw new RuntimeException("Invalid OTP!");
+            ResetPasswordResponseDTO resetPasswordResponseDTO=ResetPasswordResponseDTO.builder()
+                    .email(request.getEmail())
+                    .message("Please enter the valid OTP")
+                    .otp(request.getOtp())
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resetPasswordResponseDTO);
         }
 
         // 3️⃣ Validate password confirmation
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("Passwords do not match!");
+            ResetPasswordResponseDTO resetPasswordResponseDTO=ResetPasswordResponseDTO.builder()
+                    .email(request.getEmail())
+                    .message("Please enter the valid Password")
+                    .otp(request.getOtp())
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resetPasswordResponseDTO);
         }
 
         // 4️⃣ Encrypt and set new password
@@ -108,10 +127,12 @@ public class EmailService {
         userRepository.save(user);
 
         // 8️⃣ Return response
-        return ResetPasswordResponseDTO.builder()
+        ResetPasswordResponseDTO resetPasswordResponseDTO=ResetPasswordResponseDTO.builder()
                 .email(user.getEmail())
                 .message("Password reset successful. Please log in again.")
+                .otp(request.getOtp())
                 .build();
+        return ResponseEntity.status(HttpStatus.OK).body(resetPasswordResponseDTO);
     }
 
 
