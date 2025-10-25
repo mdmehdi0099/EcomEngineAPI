@@ -4,11 +4,13 @@ import com.Ecom.EcomEngineAPI.dto.UserActivationDeactivationRequestDTO;
 import com.Ecom.EcomEngineAPI.dto.UserActivationDeactivationResponseDTO;
 import com.Ecom.EcomEngineAPI.entity.User;
 import com.Ecom.EcomEngineAPI.repo.UserRepository;
+import org.hibernate.annotations.CurrentTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -29,17 +31,21 @@ public class AdminService {
         UserActivationDeactivationResponseDTO UserActivationResponseDTO = null;
         User user = userRepository.findByEmail(req.getEmail());
         if(user.getRole().equals("AGENT")) {
-            user.setActive(req.isActive());
-            userRepository.save(user);
-
             if (!req.isActive()) {
+                user.setActive(req.isActive());
+                user.setDeactivationReason(req.getDeactivationReason());
+                user.setDeactivatedAt(LocalDateTime.now());
+                userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
                         .message("Deactivated successfully")
                         .active(user.isActive())
                         .build();
-
             } else if (req.isActive()) {
+                user.setActive(req.isActive());
+                user.setReActivationReason(req.getReActivationReason());
+                user.setReActivatedAt(LocalDateTime.now());
+                userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
                         .message("Reactivated successfully")
@@ -67,15 +73,14 @@ public class AdminService {
                     .build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(UserActivationResponseDTO);
         }
-
         UserActivationDeactivationResponseDTO UserActivationResponseDTO = null;
         User user = userRepository.findByEmail(req.getEmail());
-
         if(user.getRole().equals("SELLER")) {
-            user.setActive(req.isActive());
-            userRepository.save(user);
-
             if (!req.isActive()) {
+                user.setActive(req.isActive());
+                user.setDeactivationReason(req.getDeactivationReason());
+                user.setDeactivatedAt(LocalDateTime.now());
+                userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
                         .message("Deactivated successfully")
@@ -83,6 +88,10 @@ public class AdminService {
                         .build();
 
             } else if (req.isActive()) {
+                user.setActive(req.isActive());
+                user.setReActivationReason(req.getReActivationReason());
+                user.setReActivatedAt(LocalDateTime.now());
+                userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
                         .message("Reactivated successfully")
@@ -96,7 +105,6 @@ public class AdminService {
                     .active(user.isActive())
                     .build();
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(UserActivationResponseDTO);
     }
 
@@ -115,17 +123,21 @@ public class AdminService {
         User user = userRepository.findByEmail(req.getEmail());
 
         if(user.getRole().equals("CUSTOMER")) {
-            user.setActive(req.isActive());
-            userRepository.save(user);
-
             if (!req.isActive()) {
+                user.setActive(req.isActive());
+                user.setDeactivationReason(req.getDeactivationReason());
+                user.setDeactivatedAt(LocalDateTime.now());
+                userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
                         .message("Deactivated successfully")
                         .active(user.isActive())
                         .build();
-
             } else if (req.isActive()) {
+                user.setActive(req.isActive());
+                user.setReActivationReason(req.getReActivationReason());
+                user.setReActivatedAt(LocalDateTime.now());
+                userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
                         .message("Reactivated successfully")
