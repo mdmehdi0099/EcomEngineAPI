@@ -43,8 +43,8 @@ public class User {
     private String deactivationReason;
     private LocalDateTime deactivatedAt;
 
-    private String reActivationReason;
-    private LocalDateTime reActivatedAt;
+    private String reactivationReason;
+    private LocalDateTime reactivatedAt;
 
     private Integer otp;
 
