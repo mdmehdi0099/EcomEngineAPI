@@ -43,8 +43,8 @@ public class AdminService {
                         .build();
             } else if (req.isActive()) {
                 user.setActive(req.isActive());
-                user.setReActivationReason(req.getReActivationReason());
-                user.setReActivatedAt(LocalDateTime.now());
+                user.setReactivationReason(req.getReActivationReason());
+                user.setReactivatedAt(LocalDateTime.now());
                 userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
@@ -89,8 +89,8 @@ public class AdminService {
 
             } else if (req.isActive()) {
                 user.setActive(req.isActive());
-                user.setReActivationReason(req.getReActivationReason());
-                user.setReActivatedAt(LocalDateTime.now());
+                user.setReactivationReason(req.getReActivationReason());
+                user.setReactivatedAt(LocalDateTime.now());
                 userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
@@ -135,8 +135,8 @@ public class AdminService {
                         .build();
             } else if (req.isActive()) {
                 user.setActive(req.isActive());
-                user.setReActivationReason(req.getReActivationReason());
-                user.setReActivatedAt(LocalDateTime.now());
+                user.setReactivationReason(req.getReActivationReason());
+                user.setReactivatedAt(LocalDateTime.now());
                 userRepository.save(user);
                 UserActivationResponseDTO = UserActivationDeactivationResponseDTO.builder()
                         .email(req.getEmail())
