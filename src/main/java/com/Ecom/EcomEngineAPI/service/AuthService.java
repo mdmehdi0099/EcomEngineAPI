@@ -36,29 +36,45 @@ public class AuthService {
 
         Role role = req.getRole() != null ? req.getRole() : Role.CUSTOMER;
 
-        User u = User.builder()
-                .username(req.getUsername())
-                .email(req.getEmail())
-                .phone(req.getPhone())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .role(role)
-                .isEmailVerified(false)
-                .isActive(true)
-                .createdAt(LocalDateTime.now())
-                .isPhoneVerified(false)
-                .build();
+        User user=new User();
+                user.setUsername(req.getUsername());
+                user.setEmail(req.getEmail());
+                user.setPhone(req.getPhone());
+                user.setPassword(passwordEncoder.encode(req.getPassword()));
+                user.setRole(role);
+                user.setEmailVerified(false);
+                user.setActive(true);
+                user.setCreatedAt(LocalDateTime.now());
+                user.setPhoneVerified(false);
 
-        userRepository.save(u);
+                User savedUser=userRepository.save(user);
+
+
+                User u = userRepository.findByEmail(req.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        // Build claims to include requested fields
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userid", u.getUserId());
+        claims.put("username", u.getUsername());
+        claims.put("email", u.getEmail());
+        claims.put("phone", u.getPhone());
+        claims.put("role", u.getRole().name());
+        claims.put("isActive", u.isActive());
+
+        String token = jwtHelper.generateToken(claims, u.getEmail());
         return AuthResponse.builder()
+                .token(token)
                 .userId(u.getUserId())
                 .username(u.getUsername())
                 .email(u.getEmail())
                 .phone(u.getPhone())
                 .role(String.valueOf(u.getRole()))       // ✅ Added here
                 .isActive(u.isActive())
-                .message("User registration successful")
                 .build();
+
     }
+
     public AuthResponse registerAdminUser(RegisterRequest req) {
         if (userRepository.existsByEmail(req.getEmail())) {
             return AuthResponse.builder()
@@ -70,28 +86,42 @@ public class AuthService {
                     .isActive(true)
                     .build();
         }
-        //Role role = req.getRole() != null ? req.getRole() : Role.USER;
-        User u = User.builder()
-                .username(req.getUsername())
-                .email(req.getEmail())
-                .phone(req.getPhone())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .role(Role.valueOf("ADMIN"))
-                .isEmailVerified(false)
-                .isActive(true)
-                .createdAt(LocalDateTime.now())
-                .isPhoneVerified(false)
-                .build();
+        Role role = req.getRole() != null ? req.getRole() : Role.ADMIN;
+        User user=new User();
+        user.setUsername(req.getUsername());
+        user.setEmail(req.getEmail());
+        user.setPhone(req.getPhone());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setRole(role);
+        user.setEmailVerified(false);
+        user.setActive(true);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setPhoneVerified(false);
 
-        userRepository.save(u);
+        User savedUser=userRepository.save(user);
+
+
+        User u = userRepository.findByEmail(req.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        // Build claims to include requested fields
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userid", u.getUserId());
+        claims.put("username", u.getUsername());
+        claims.put("email", u.getEmail());
+        claims.put("phone", u.getPhone());
+        claims.put("role", u.getRole().name());
+        claims.put("isActive", u.isActive());
+
+        String token = jwtHelper.generateToken(claims, u.getEmail());
         return AuthResponse.builder()
+                .token(token)
                 .userId(u.getUserId())
                 .username(u.getUsername())
                 .email(u.getEmail())
                 .phone(u.getPhone())
                 .role(String.valueOf(u.getRole()))       // ✅ Added here
                 .isActive(u.isActive())
-                .message("Admin user registration successful")
                 .build();
     }
     public AuthResponse registerSellerUser(RegisterRequest req) {
@@ -105,28 +135,42 @@ public class AuthService {
                     .isActive(true)
                     .build();
         }
-        //Role role = req.getRole() != null ? req.getRole() : Role.USER;
-        User u = User.builder()
-                .username(req.getUsername())
-                .email(req.getEmail())
-                .phone(req.getPhone())
-                .password(passwordEncoder.encode(req.getPassword()))
-                .role(Role.valueOf("SELLER"))
-                .isEmailVerified(false)
-                .isActive(true)
-                .createdAt(LocalDateTime.now())
-                .isPhoneVerified(false)
-                .build();
+        Role role = req.getRole() != null ? req.getRole() : Role.SELLER;
+        User user=new User();
+        user.setUsername(req.getUsername());
+        user.setEmail(req.getEmail());
+        user.setPhone(req.getPhone());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setRole(role);
+        user.setEmailVerified(false);
+        user.setActive(true);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setPhoneVerified(false);
 
-        userRepository.save(u);
+        User savedUser=userRepository.save(user);
+
+
+        User u = userRepository.findByEmail(req.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+
+        // Build claims to include requested fields
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userid", u.getUserId());
+        claims.put("username", u.getUsername());
+        claims.put("email", u.getEmail());
+        claims.put("phone", u.getPhone());
+        claims.put("role", u.getRole().name());
+        claims.put("isActive", u.isActive());
+
+        String token = jwtHelper.generateToken(claims, u.getEmail());
         return AuthResponse.builder()
+                .token(token)
                 .userId(u.getUserId())
                 .username(u.getUsername())
                 .email(u.getEmail())
                 .phone(u.getPhone())
                 .role(String.valueOf(u.getRole()))       // ✅ Added here
                 .isActive(u.isActive())
-                .message("Admin user registration successful")
                 .build();
     }
 
@@ -141,7 +185,7 @@ public class AuthService {
                     .isActive(true)
                     .build();
         }
-        //Role role = req.getRole() != null ? req.getRole() : Role.USER;
+        Role role = req.getRole() != null ? req.getRole() : Role.AGENT;
         User u = User.builder()
                 .username(req.getUsername())
                 .email(req.getEmail())
@@ -165,9 +209,6 @@ public class AuthService {
                 .message("Admin user registration successful")
                 .build();
     }
-
-
-
     public AuthResponse login(LoginRequest req) {
         User u = userRepository.findByEmail(req.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
@@ -202,6 +243,9 @@ public class AuthService {
                 .isActive(u.isActive())
                 .build();
     }
+
+
+
 //    public AuthResponse refresh(String oldToken) {
 //        if (!jwtHelper.validateToken(oldToken)) {
 //            throw new RuntimeException("Invalid/expired token");
