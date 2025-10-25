@@ -4,11 +4,13 @@ import com.Ecom.EcomEngineAPI.dto.UserActivationDeactivationRequestDTO;
 import com.Ecom.EcomEngineAPI.dto.UserActivationDeactivationResponseDTO;
 import com.Ecom.EcomEngineAPI.entity.User;
 import com.Ecom.EcomEngineAPI.repo.UserRepository;
+import org.hibernate.annotations.CurrentTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -30,6 +32,8 @@ public class AdminService {
         User user = userRepository.findByEmail(req.getEmail());
         if(user.getRole().equals("AGENT")) {
             user.setActive(req.isActive());
+            user.setDeactivationReason(req.getDeactivationReason());
+            user.setDeactivatedAt(LocalDateTime.now());
             userRepository.save(user);
 
             if (!req.isActive()) {
@@ -73,6 +77,8 @@ public class AdminService {
 
         if(user.getRole().equals("SELLER")) {
             user.setActive(req.isActive());
+            user.setDeactivationReason(req.getDeactivationReason());
+            user.setDeactivatedAt(LocalDateTime.now());
             userRepository.save(user);
 
             if (!req.isActive()) {
@@ -116,6 +122,8 @@ public class AdminService {
 
         if(user.getRole().equals("CUSTOMER")) {
             user.setActive(req.isActive());
+            user.setDeactivationReason(req.getDeactivationReason());
+            user.setDeactivatedAt(LocalDateTime.now());
             userRepository.save(user);
 
             if (!req.isActive()) {
