@@ -15,8 +15,8 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.Ecom.EcomEngineAPI.entity.User u = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        com.Ecom.EcomEngineAPI.entity.User u = userRepository.findByEmail(email);
+                //.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         // Spring Security wants ROLE_ prefix on authorities
         String roleName = "ROLE_" + (u.getRole() != null ? u.getRole().name() : "USER");

@@ -9,5 +9,6 @@ import lombok.*;
 @Builder
 public class ResetPasswordResponseDTO {
     private String email;
+    private Integer otp;
     private String message;
 }

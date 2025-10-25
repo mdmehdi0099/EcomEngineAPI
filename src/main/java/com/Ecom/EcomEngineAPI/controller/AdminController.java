@@ -20,16 +20,13 @@ public class AdminController {
     //registerSellerUser
     @PostMapping("/registerSellerUser")
     public ResponseEntity<?> registerSellerUser(@RequestBody RegisterRequest request) {
-        AuthResponse response = authService.registerSellerUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return authService.registerSellerUser(request);
     }
 
     //registerAgentUser
     @PostMapping("/registerAgentUser")
     public ResponseEntity<?> registerAgentUser(@RequestBody RegisterRequest request) {
-        AuthResponse response = authService.registerAgentUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return authService.registerAgentUser(request);
     }
-
 
 }
