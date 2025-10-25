@@ -2,6 +2,7 @@ package com.Ecom.EcomEngineAPI.service;
 
 import com.Ecom.EcomEngineAPI.dto.UserActivationDeactivationRequestDTO;
 import com.Ecom.EcomEngineAPI.dto.UserActivationDeactivationResponseDTO;
+import com.Ecom.EcomEngineAPI.entity.Role;
 import com.Ecom.EcomEngineAPI.entity.User;
 import com.Ecom.EcomEngineAPI.repo.UserRepository;
 import org.hibernate.annotations.CurrentTimestamp;
@@ -30,7 +31,7 @@ public class AdminService {
         }
         UserActivationDeactivationResponseDTO UserActivationResponseDTO = null;
         User user = userRepository.findByEmail(req.getEmail());
-        if(user.getRole().equals("AGENT")) {
+        if(user.getRole().equals(Role.AGENT)) {
             if (!req.isActive()) {
                 user.setActive(req.isActive());
                 user.setDeactivationReason(req.getDeactivationReason());
@@ -74,7 +75,7 @@ public class AdminService {
         }
         UserActivationDeactivationResponseDTO UserActivationResponseDTO = null;
         User user = userRepository.findByEmail(req.getEmail());
-        if(user.getRole().equals("SELLER")) {
+        if(user.getRole().equals(Role.SELLER)) {
             if (!req.isActive()) {
                 user.setActive(req.isActive());
                 user.setDeactivationReason(req.getDeactivationReason());
@@ -121,7 +122,7 @@ public class AdminService {
         UserActivationDeactivationResponseDTO UserActivationResponseDTO = null;
         User user = userRepository.findByEmail(req.getEmail());
 
-        if(user.getRole().equals("CUSTOMER")) {
+        if(user.getRole().equals(Role.CUSTOMER)) {
             if (!req.isActive()) {
                 user.setActive(req.isActive());
                 user.setDeactivationReason(req.getDeactivationReason());
