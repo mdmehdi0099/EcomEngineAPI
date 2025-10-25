@@ -59,7 +59,6 @@ public class AdminService {
                     .active(user.isActive())
                     .build();
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(UserActivationResponseDTO);
     }
 

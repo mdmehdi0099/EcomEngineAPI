@@ -8,10 +8,7 @@ import com.Ecom.EcomEngineAPI.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -35,37 +32,37 @@ public class AdminController {
     }
 
     //deactivate user by email
-    @PostMapping("/deactivateAgentUser")
+    @PutMapping("/deactivateAgentUser")
     public ResponseEntity<?> deactivateAgentUser(@RequestBody UserActivationDeactivationRequestDTO request) {
         return adminService.activateDeActivateAgentUser(request);
     }
 
     //reActivate Agent User by email
-    @PostMapping("/reActivateAgentUser")
+    @PutMapping("/reActivateAgentUser")
     public ResponseEntity<?> reActivateAgentUser(@RequestBody UserActivationDeactivationRequestDTO request) {
         return adminService.activateDeActivateAgentUser(request);
     }
 
     //deactivate user by email
-    @PostMapping("/deactivateSellerUser")
+    @PutMapping("/deactivateSellerUser")
     public ResponseEntity<?> deactivateSellerUser(@RequestBody UserActivationDeactivationRequestDTO request) {
         return adminService.activateDeActivateSellerUser(request);
     }
 
     //deactivate user by email
-    @PostMapping("/reActivateSellerUser")
+    @PutMapping("/reActivateSellerUser")
     public ResponseEntity<?> reActivateSellerUser(@RequestBody UserActivationDeactivationRequestDTO request) {
         return adminService.activateDeActivateSellerUser(request);
     }
 
     //deactivate user by email
-    @PostMapping("/deactivateCustomer")
+    @PutMapping("/deactivateCustomer")
     public ResponseEntity<?> deactivateCustomer(@RequestBody UserActivationDeactivationRequestDTO request) {
         return adminService.activateDeActivateCustomer(request);
     }
 
     //deactivate user by email
-    @PostMapping("/reActivateCustomer")
+    @PutMapping("/reActivateCustomer")
     public ResponseEntity<?> reActivateCustomer(@RequestBody UserActivationDeactivationRequestDTO request) {
         return adminService.activateDeActivateCustomer(request);
     }
