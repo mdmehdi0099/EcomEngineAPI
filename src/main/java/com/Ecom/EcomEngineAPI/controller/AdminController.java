@@ -3,9 +3,12 @@ package com.Ecom.EcomEngineAPI.controller;
 import com.Ecom.EcomEngineAPI.dto.AuthResponse;
 import com.Ecom.EcomEngineAPI.dto.RegisterRequest;
 import com.Ecom.EcomEngineAPI.dto.UserActivationDeactivationRequestDTO;
+import com.Ecom.EcomEngineAPI.dto.UserProfileResponseDTO;
 import com.Ecom.EcomEngineAPI.entity.User;
 import com.Ecom.EcomEngineAPI.service.AdminService;
 import com.Ecom.EcomEngineAPI.service.AuthService;
+import com.Ecom.EcomEngineAPI.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,13 +20,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-
-
     @Autowired
     private AuthService authService;
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private UserService userService;
 
     //registerSellerUser
     @PostMapping("/registerSellerUser")
@@ -97,6 +101,17 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    //Admin profile
+    @GetMapping("/myprofile")
+    public ResponseEntity<UserProfileResponseDTO> viewMyProfile(HttpServletRequest request){
+        ResponseEntity<UserProfileResponseDTO> userProfileResponseDTO=userService.getMyProfileDetails(request);
+        return userProfileResponseDTO;
+    }
+
+
+
+
 
 
 

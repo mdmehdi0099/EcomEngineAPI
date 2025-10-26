@@ -310,6 +310,7 @@ public class AuthService {
                 .phone(user.getPhone())
                 .role(String.valueOf(user.getRole()))       // ✅ Added here
                 .isActive(user.isActive())
+                .message("Logged in successfully...")
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response3);
     }
