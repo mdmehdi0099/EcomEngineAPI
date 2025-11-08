@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 })
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
-    @Id
+    @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     @Column(nullable = false)
