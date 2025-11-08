@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
         Page<Product> findByCategoryCategoryId(Long categoryId, org.springframework.data.domain.Pageable pageable);
-        Page<Product> findByBrandBrandId(Long brandId, org.springframework.data.domain.Pageable pageable);
         Page<Product> findByNameContainingIgnoreCase(String name, org.springframework.data.domain.Pageable pageable);
         Page<Product> findByBrandNameContainingIgnoreCase(String brandName, org.springframework.data.domain.Pageable pageable);
 
