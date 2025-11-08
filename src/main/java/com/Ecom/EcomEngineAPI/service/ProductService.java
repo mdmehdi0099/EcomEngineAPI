@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -52,6 +53,28 @@ public class ProductService {
 
         Product saved = productRepository.save(p);
         return mapToDto(saved);
+    }
+
+    public List<ProductResponseDTO> listAllProducts() {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(p -> ProductResponseDTO.builder()
+                        .productId(p.getProductId())
+                        .name(p.getName())
+                        .description(p.getDescription())
+                        .price(p.getPrice())
+                        .pictureUrl(p.getPictureURL())
+                        .brandName(p.getBrand() != null ? p.getBrand().getName() : null)
+                        .categoryName(p.getCategory() != null ? p.getCategory().getName() : null)
+                        .active(p.isActive())
+                        .verified(p.isVerified())
+                        .stockKeepingUnit(p.getStockKeepingUnit())
+                        .inventoryCount(p.getInventoryCount())
+                        .createdAt(p.getCreatedAt())
+                        .updatedAt(p.getUpdatedAt())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Transactional

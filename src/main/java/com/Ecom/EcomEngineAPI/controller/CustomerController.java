@@ -45,6 +45,13 @@ public class CustomerController {
         return ResponseEntity.ok(categories);
     }
 
+    //get the list of product
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
+        List<ProductResponseDTO> products = productService.listAllProducts();
+        return ResponseEntity.ok(products);
+    }
+
     // Example: http://localhost:8083/customer/product/search?categoryId=1&name=Smart Phone&page=0&size=20&sort=price,asc
     @GetMapping("/product/search")
     public ResponseEntity<org.springframework.data.domain.Page<ProductResponseDTO>> searchProducts(

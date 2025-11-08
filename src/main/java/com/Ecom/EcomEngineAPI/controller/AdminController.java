@@ -223,6 +223,12 @@ public class AdminController {
         ProductResponseDTO updated = productService.activateProductByAdmin(productId, verifiedReason);
         return ResponseEntity.ok(updated);
     }
+    //get the list of product
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
+        List<ProductResponseDTO> products = productService.listAllProducts();
+        return ResponseEntity.ok(products);
+    }
 
     // Example: http://localhost:8083/admin/product/search?categoryId=1&name=Smart Phone&page=0&size=20&sort=price,asc
     @GetMapping("/product/search")
