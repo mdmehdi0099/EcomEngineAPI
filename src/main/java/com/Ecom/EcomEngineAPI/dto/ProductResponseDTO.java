@@ -21,6 +21,7 @@ public class ProductResponseDTO {
     private Long categoryId;
     private String categoryName;
     private boolean active;
+    private String createdBy;
     private boolean verified;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

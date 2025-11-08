@@ -1,20 +1,23 @@
 package com.Ecom.EcomEngineAPI.controller;
 
+import com.Ecom.EcomEngineAPI.dto.CategoryResponseDTO;
 import com.Ecom.EcomEngineAPI.dto.ProductResponseDTO;
 import com.Ecom.EcomEngineAPI.dto.UserProfileResponseDTO;
+import com.Ecom.EcomEngineAPI.service.CategoryService;
 import com.Ecom.EcomEngineAPI.service.ProductService;
 import com.Ecom.EcomEngineAPI.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
+import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
@@ -25,6 +28,9 @@ public class CustomerController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     //customer profile
     @GetMapping("/myprofile")
     public ResponseEntity<UserProfileResponseDTO> viewMyProfile(HttpServletRequest request){
@@ -32,20 +38,26 @@ public class CustomerController {
         return userProfileResponseDTO;
     }
 
-    // Users can view / search products (no auth required or ROLE_USER)
-    // Example: /products/search?categoryId=1&name=mouse&brandName=logitech&page=0&size=20&sort=price,asc
+    //list of categories
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories(){
+        List<CategoryResponseDTO> categories=categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
+    }
+
+    // Example: http://localhost:8083/customer/product/search?categoryId=1&name=Smart Phone&page=0&size=20&sort=price,asc
     @GetMapping("/product/search")
     public ResponseEntity<org.springframework.data.domain.Page<ProductResponseDTO>> searchProducts(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String brandName,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "200") int size,
             @RequestParam(defaultValue = "createdAt,desc") String[] sort
     ) {
         Sort.Direction direction = Sort.Direction.fromString(sort.length > 1 ? sort[1] : "desc");
         String sortBy = sort[0];
-        Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by(direction, sortBy));
+        org.springframework.data.domain.Pageable pageable = (Pageable) PageRequest.of(page, size, Sort.by(direction, sortBy));
 
         Page<ProductResponseDTO> results = productService.searchProducts(categoryId, name, brandName, (org.springframework.data.domain.Pageable) pageable);
         return ResponseEntity.ok(results);

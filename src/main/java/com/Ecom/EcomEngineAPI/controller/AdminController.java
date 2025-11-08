@@ -3,6 +3,7 @@ package com.Ecom.EcomEngineAPI.controller;
 import com.Ecom.EcomEngineAPI.dto.*;
 import com.Ecom.EcomEngineAPI.entity.Brand;
 import com.Ecom.EcomEngineAPI.entity.Category;
+import com.Ecom.EcomEngineAPI.entity.Role;
 import com.Ecom.EcomEngineAPI.entity.User;
 import com.Ecom.EcomEngineAPI.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -122,28 +123,108 @@ public class AdminController {
         return userProfileResponseDTO;
     }
 
+    //add the categories
     @PostMapping("/categories")
     public ResponseEntity<?> createCategory(@RequestBody CategoryCreateDTO dto) {
         Category created = categoryService.createCategory(dto);
         return ResponseEntity.status(201).body(created);
     }
+    //list of categories
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories(){
+        List<CategoryResponseDTO> categories=categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
+    }
 
+    //update the categories
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<CategoryUpdateResponseDTO> updateCategory(@PathVariable Long id,@RequestBody CategoryUpdateDTO dto){
+        CategoryUpdateResponseDTO updateResponseDTO=categoryService.updateCategory(id,dto);
+        return ResponseEntity.ok(updateResponseDTO);
+    }
+
+
+    //Add the brands
     @PostMapping("/brands")
     public ResponseEntity<?> createBrand(@RequestBody BrandCreateDTO dto) {
         Brand created = brandService.createBrand(dto);
         return ResponseEntity.status(201).body(created);
     }
 
-    // Seller (AGENT) uploads product
+    //list of brand
+    @GetMapping("/brands")
+    public ResponseEntity<List<BrandResponseDTO>> getAllBrands(){
+        List<BrandResponseDTO> brands=brandService.getAllBrands();
+        return ResponseEntity.ok(brands);
+    }
+    //Get particular brand
+    @GetMapping("/brand/{id}")
+    public ResponseEntity<BrandResponseDTO> getBrandById(@PathVariable Long id){
+        BrandResponseDTO brand=brandService.getBrandById(id);
+        return ResponseEntity.ok(brand);
+    }
+
+    //update the brand
+    @PutMapping("/brand/{id}")
+    public ResponseEntity<BrandResponseDTO> updateBrand(@PathVariable Long id,@RequestBody BrandRequestDTO dto){
+        BrandResponseDTO updateResponseDTO=brandService.updateBrand(id,dto);
+        return ResponseEntity.ok(updateResponseDTO);
+    }
+
+
+
+    //create product
     //@PreAuthorize("hasRole('AGENT') or hasRole('ADMIN')")
-    @PostMapping("/products/upload")
-    public ResponseEntity<ProductResponseDTO> uploadProduct(@RequestBody ProductCreateDTO dto) {
+    @PostMapping("/products/create")
+    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductCreateDTO dto) {
         ProductResponseDTO created = productService.createProduct(dto);
         return ResponseEntity.status(201).body(created);
     }
 
-    // Users can view / search products (no auth required or ROLE_USER)
-    // Example: /products/search?categoryId=1&name=mouse&brandName=logitech&page=0&size=20&sort=price,asc
+    //get the seller added product and is active
+    @GetMapping("/sellerProductActive")
+    public ResponseEntity<List<ProductResponseDTO>> getActiveProductsBySeller(
+            @RequestParam("role") Role sellerRole) {
+
+        List<ProductResponseDTO> products = productService.getActiveProductsBySeller(sellerRole);
+        return ResponseEntity.ok(products);
+    }
+    //get the seller added product and is InActive
+    @GetMapping("/sellerProductInActive")
+    public ResponseEntity<List<ProductResponseDTO>> getInActiveProductsBySeller(
+            @RequestParam("role") Role sellerRole) {
+
+        List<ProductResponseDTO> products = productService.getInActiveProductsBySeller(sellerRole);
+        return ResponseEntity.ok(products);
+    }
+    //get the Agent added product and is active
+    @GetMapping("/agentProductActive")
+    public ResponseEntity<List<ProductResponseDTO>> getActiveProductsByAgent(
+            @RequestParam("role") Role sellerRole) {
+
+        List<ProductResponseDTO> products = productService.getActiveProductsBySeller(sellerRole);
+        return ResponseEntity.ok(products);
+    }
+    //get the agent added product and is InActive
+    @GetMapping("/agentProductInActive")
+    public ResponseEntity<List<ProductResponseDTO>> getInActiveProductsByAgent(
+            @RequestParam("role") Role sellerRole) {
+
+        List<ProductResponseDTO> products = productService.getInActiveProductsBySeller(sellerRole);
+        return ResponseEntity.ok(products);
+    }
+    //verify the product added by agent/seller
+    // Example: PUT /products/activate/12
+    @PutMapping("/activate/{productId}")
+    public ResponseEntity<ProductResponseDTO> activateProductByAdmin(
+            @PathVariable Long productId,
+            @RequestBody(required = false) String verifiedReason) {
+
+        ProductResponseDTO updated = productService.activateProductByAdmin(productId, verifiedReason);
+        return ResponseEntity.ok(updated);
+    }
+
+    // Example: http://localhost:8083/admin/product/search?categoryId=1&name=Smart Phone&page=0&size=20&sort=price,asc
     @GetMapping("/product/search")
     public ResponseEntity<org.springframework.data.domain.Page<ProductResponseDTO>> searchProducts(
             @RequestParam(required = false) Long categoryId,
@@ -169,11 +250,6 @@ public class AdminController {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return ResponseEntity.ok(dto);
     }
-
-
-
-
-
 
 
 

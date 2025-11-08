@@ -24,6 +24,7 @@ public class Category {
     private Long categoryId;
     @Column(nullable = false,unique = true)
     private String name;
+    private String description;
     private boolean active=true;
     private String deactivationReason;
     private LocalDateTime deactivatedAt;

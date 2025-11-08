@@ -16,6 +16,7 @@ public class ProductCreateDTO {
     private String description;
     private Long price;
     private String pictureUrl;
+    private String createdBy;
     private Long brandId;
     private Long categoryId;
     private Long stockKeepingUnit;
