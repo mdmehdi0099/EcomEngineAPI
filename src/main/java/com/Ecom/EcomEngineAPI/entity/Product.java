@@ -40,10 +40,12 @@ public class Product {
     private Category category;
 
     private boolean active=true;
+    private Role createdBy;
     private LocalDateTime addedOn;
     private boolean verified=false;
     @Enumerated(EnumType.STRING)
     private Role verifiedBy;
+    private String verifiedReason;
     private LocalDateTime verifiedOn;
     @Column(unique = true)
     private Long stockKeepingUnit;
