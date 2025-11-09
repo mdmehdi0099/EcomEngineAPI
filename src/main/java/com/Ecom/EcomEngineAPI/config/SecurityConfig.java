@@ -26,6 +26,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->  auth
                         // ✅ Allow Swagger & API docs without authentication
+                        //http://localhost:8083/swagger-ui/index.html
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
