@@ -44,6 +44,9 @@ public class AdminController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private AddressService addressService;
+
     //registerSellerUser
     @PostMapping("/registerSellerUser")
     public ResponseEntity<?> registerSellerUser(@RequestBody RegisterRequest request) {
@@ -271,6 +274,23 @@ public class AdminController {
     public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long customerId) {
         CartResponseDTO response = cartService.getCart(customerId);
         return ResponseEntity.ok(response);
+    }
+
+    //add the address
+    @PostMapping("/address/add")
+    public ResponseEntity<AddressResponseDTO> addAddress(@RequestBody AddressCreateDTO dto) {
+        AddressResponseDTO response = addressService.addAddress(dto);
+        return ResponseEntity.status(201).body(response);
+    }
+    //get the address
+    @GetMapping("/address/user/{userId}")
+    public ResponseEntity<List<AddressResponseDTO>> getAddresses(@PathVariable Long userId) {
+        return ResponseEntity.ok(addressService.getAddressesByUser(userId));
+    }
+    //get the default address
+    @GetMapping("/address/user/{userId}/default")
+    public ResponseEntity<AddressResponseDTO> getDefaultAddress(@PathVariable Long userId) {
+        return ResponseEntity.ok(addressService.getDefaultAddress(userId));
     }
 
 

@@ -1,10 +1,7 @@
 package com.Ecom.EcomEngineAPI.controller;
 
 import com.Ecom.EcomEngineAPI.dto.*;
-import com.Ecom.EcomEngineAPI.service.CartService;
-import com.Ecom.EcomEngineAPI.service.CategoryService;
-import com.Ecom.EcomEngineAPI.service.ProductService;
-import com.Ecom.EcomEngineAPI.service.UserService;
+import com.Ecom.EcomEngineAPI.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +30,8 @@ public class CustomerController {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private AddressService addressService;
     //customer profile
     @GetMapping("/myprofile")
     public ResponseEntity<UserProfileResponseDTO> viewMyProfile(HttpServletRequest request){
@@ -93,6 +92,23 @@ public class CustomerController {
     public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long customerId) {
         CartResponseDTO response = cartService.getCart(customerId);
         return ResponseEntity.ok(response);
+    }
+
+    //add the address
+    @PostMapping("/address/add")
+    public ResponseEntity<AddressResponseDTO> addAddress(@RequestBody AddressCreateDTO dto) {
+        AddressResponseDTO response = addressService.addAddress(dto);
+        return ResponseEntity.status(201).body(response);
+    }
+    //get the address
+    @GetMapping("/address/user/{userId}")
+    public ResponseEntity<List<AddressResponseDTO>> getAddresses(@PathVariable Long userId) {
+        return ResponseEntity.ok(addressService.getAddressesByUser(userId));
+    }
+    //get the default address
+    @GetMapping("/address/user/{userId}/default")
+    public ResponseEntity<AddressResponseDTO> getDefaultAddress(@PathVariable Long userId) {
+        return ResponseEntity.ok(addressService.getDefaultAddress(userId));
     }
 
 
