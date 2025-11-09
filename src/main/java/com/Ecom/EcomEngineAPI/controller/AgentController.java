@@ -1,9 +1,7 @@
 package com.Ecom.EcomEngineAPI.controller;
 
-import com.Ecom.EcomEngineAPI.dto.CategoryResponseDTO;
-import com.Ecom.EcomEngineAPI.dto.ProductCreateDTO;
-import com.Ecom.EcomEngineAPI.dto.ProductResponseDTO;
-import com.Ecom.EcomEngineAPI.dto.UserProfileResponseDTO;
+import com.Ecom.EcomEngineAPI.dto.*;
+import com.Ecom.EcomEngineAPI.service.CartService;
 import com.Ecom.EcomEngineAPI.service.CategoryService;
 import com.Ecom.EcomEngineAPI.service.ProductService;
 import com.Ecom.EcomEngineAPI.service.UserService;
@@ -31,6 +29,9 @@ public class AgentController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private CartService cartService;
 
     //Agent profile
     @GetMapping("/myprofile")
@@ -86,6 +87,21 @@ public class AgentController {
                 .stream().filter(p -> p.getProductId().equals(id)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return ResponseEntity.ok(dto);
+    }
+
+
+    //Add to cart
+    @PostMapping("/cart/{customerId}/add")
+    public ResponseEntity<CartResponseDTO> addToCart(@PathVariable Long customerId,
+                                                     @RequestBody AddToCartDTO dto) {
+        CartResponseDTO response = cartService.addToCart(customerId, dto);
+        return ResponseEntity.ok(response);
+    }
+    //get cart items
+    @GetMapping("/cart/{customerId}")
+    public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long customerId) {
+        CartResponseDTO response = cartService.getCart(customerId);
+        return ResponseEntity.ok(response);
     }
 
 

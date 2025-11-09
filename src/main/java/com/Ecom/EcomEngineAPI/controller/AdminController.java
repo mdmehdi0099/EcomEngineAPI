@@ -41,7 +41,8 @@ public class AdminController {
     @Autowired
     private ProductService productService;
 
-
+    @Autowired
+    private CartService cartService;
 
     //registerSellerUser
     @PostMapping("/registerSellerUser")
@@ -255,6 +256,21 @@ public class AdminController {
                 .stream().filter(p -> p.getProductId().equals(id)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return ResponseEntity.ok(dto);
+    }
+
+
+    //Add to cart
+    @PostMapping("/cart/{customerId}/add")
+    public ResponseEntity<CartResponseDTO> addToCart(@PathVariable Long customerId,
+                                                     @RequestBody AddToCartDTO dto) {
+        CartResponseDTO response = cartService.addToCart(customerId, dto);
+        return ResponseEntity.ok(response);
+    }
+    //get cart items
+    @GetMapping("/cart/{customerId}")
+    public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long customerId) {
+        CartResponseDTO response = cartService.getCart(customerId);
+        return ResponseEntity.ok(response);
     }
 
 
