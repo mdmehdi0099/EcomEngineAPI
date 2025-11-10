@@ -32,6 +32,11 @@ public class CustomerController {
 
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private PaymentService paymentService;
+
+
     //customer profile
     @GetMapping("/myprofile")
     public ResponseEntity<UserProfileResponseDTO> viewMyProfile(HttpServletRequest request){
@@ -109,6 +114,13 @@ public class CustomerController {
     @GetMapping("/address/user/{userId}/default")
     public ResponseEntity<AddressResponseDTO> getDefaultAddress(@PathVariable Long userId) {
         return ResponseEntity.ok(addressService.getDefaultAddress(userId));
+    }
+
+    //payment
+    @PostMapping("/payment/process")
+    public ResponseEntity<PaymentResponseDTO> processPayment(@RequestBody PaymentRequestDTO dto) {
+        PaymentResponseDTO response = paymentService.processPayment(dto);
+        return ResponseEntity.status(201).body(response);
     }
 
 
