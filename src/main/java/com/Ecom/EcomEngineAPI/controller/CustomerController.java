@@ -1,6 +1,8 @@
 package com.Ecom.EcomEngineAPI.controller;
 
 import com.Ecom.EcomEngineAPI.dto.*;
+import com.Ecom.EcomEngineAPI.entity.Order;
+import com.Ecom.EcomEngineAPI.entity.OrderStatus;
 import com.Ecom.EcomEngineAPI.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,8 @@ public class CustomerController {
     @Autowired
     private PaymentService paymentService;
 
+    @Autowired
+    private OrderService orderService;
 
     //customer profile
     @GetMapping("/myprofile")
@@ -122,7 +126,22 @@ public class CustomerController {
         PaymentResponseDTO response = paymentService.processPayment(dto);
         return ResponseEntity.status(201).body(response);
     }
-
+    //place an order
+    @PostMapping("/oder/place")
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO dto) {
+        Order order = orderService.placeOrder(dto);
+        return ResponseEntity.status(201).body(order);
+    }
+    //get orders by userId
+    @GetMapping("/oder/user/{userId}")
+    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(orderService.getOrdersByUser(userId));
+    }
+    //get orders by status
+    @GetMapping("/oder/status/{status}")
+    public ResponseEntity<List<Order>> getOrdersByStatus(@PathVariable OrderStatus status) {
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status));
+    }
 
 
 }

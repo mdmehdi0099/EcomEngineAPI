@@ -1,10 +1,7 @@
 package com.Ecom.EcomEngineAPI.controller;
 
 import com.Ecom.EcomEngineAPI.dto.*;
-import com.Ecom.EcomEngineAPI.entity.Brand;
-import com.Ecom.EcomEngineAPI.entity.Category;
-import com.Ecom.EcomEngineAPI.entity.Role;
-import com.Ecom.EcomEngineAPI.entity.User;
+import com.Ecom.EcomEngineAPI.entity.*;
 import com.Ecom.EcomEngineAPI.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator;
@@ -303,6 +300,13 @@ public class AdminController {
         PaymentResponseDTO response = paymentService.processPayment(dto);
         return ResponseEntity.status(201).body(response);
     }
+    //get the payment list by status
+    @GetMapping("/payment/status/{status}")
+    public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByStatus(@PathVariable PaymentStatus status) {
+        List<PaymentResponseDTO> payments = paymentService.getPaymentsByStatus(status);
+        return ResponseEntity.ok(payments);
+    }
+
 
 
 
