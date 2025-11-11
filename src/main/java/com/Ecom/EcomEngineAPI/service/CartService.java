@@ -26,13 +26,13 @@ public class CartService {
 
 
     @Transactional
-    public CartResponseDTO addToCart(Long customerId, AddToCartDTO dto) {
+    public CartResponseDTO addToCart(Long userId, AddToCartDTO dto) {
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Cart cart = cartRepository.findByUserId(customerId)
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> Cart.builder()
-                        .userId(customerId)
+                        .userId(userId)
                         .totalItems(0L)
                         .totalAmount(0L)
                         .build());
