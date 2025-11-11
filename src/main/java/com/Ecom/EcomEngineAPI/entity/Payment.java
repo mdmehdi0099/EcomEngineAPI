@@ -22,16 +22,16 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String paymentReference;
 
-    @Column(nullable = false,unique = true)
-    private String orderId;
+    @Column(nullable = false, unique = true)
+    private String orderReference; // renamed to avoid confusion with Order entity
 
     private Long userId;
 
     @Column(nullable = false)
-    private String paymentMode;
+    private String paymentMode; // e.g., "UPI", "CREDIT_CARD", "DEBIT_CARD"
 
     private Long amount;
 
@@ -39,11 +39,16 @@ public class Payment {
     private PaymentStatus status;
 
     private String transactionNote;
+
     @CreatedDate
     private LocalDateTime createdAt;
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    // ✅ Bidirectional link back to Order
+    @OneToOne(mappedBy = "payment")
+    private Order order;
 
 
 

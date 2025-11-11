@@ -39,7 +39,7 @@ public class PaymentService {
         // 3️⃣ Create payment record
         Payment payment = Payment.builder()
                 .paymentReference(UUID.randomUUID().toString())
-                .orderId(String.valueOf(dto.getOrderId()))
+                .orderReference(String.valueOf(dto.getOrderId()))
                 .userId(dto.getUserId())
                 .paymentMode(dto.getPaymentMode())
                 .amount(dto.getAmount())
@@ -91,7 +91,7 @@ public class PaymentService {
                 .map(payment -> PaymentResponseDTO.builder()
                         .paymentId(payment.getPaymentId())
                         .paymentReference(payment.getPaymentReference())
-                        .orderId(Long.valueOf(payment.getOrderId()))
+                        .orderId(Long.valueOf(payment.getOrderReference()))
                         .userId(payment.getUserId())
                         .paymentMode(payment.getPaymentMode())
                         .amount(payment.getAmount())

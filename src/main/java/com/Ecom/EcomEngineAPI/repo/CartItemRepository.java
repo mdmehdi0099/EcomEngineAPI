@@ -13,4 +13,8 @@ public interface CartItemRepository extends JpaRepository<CartItem,Long> {
 
     // Optional: find all cart items by userId directly (if you store userId in Cart)
     List<CartItem> findByCart_UserId(Long userId);
+
+    //List<CartItem> findByCart_User_UserId(Long userId);
+
+    //List<CartItem> findByCart_UserId(Long userId);
 }

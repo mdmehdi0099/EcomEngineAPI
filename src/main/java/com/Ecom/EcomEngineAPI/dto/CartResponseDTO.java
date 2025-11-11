@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 public class CartResponseDTO {
     private Long cartId;
-    private Long customerId;
+    private Long userId;
     private Long totalItems;
     private Long totalAmount;
     private List<CartItemResponseDTO> items;

@@ -36,7 +36,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    // ✅ This owns the relationship
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_id", referencedColumnName = "paymentId")
     private Payment payment;
 
     private boolean paid;
@@ -46,6 +48,4 @@ public class Order {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-
 }
