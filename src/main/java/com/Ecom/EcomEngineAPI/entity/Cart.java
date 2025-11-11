@@ -20,7 +20,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
 
-    private Long customerId;
+    private Long userId;
 
     private Long totalItems;
     private Long totalAmount;

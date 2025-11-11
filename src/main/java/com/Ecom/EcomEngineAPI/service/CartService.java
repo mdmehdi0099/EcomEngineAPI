@@ -26,13 +26,13 @@ public class CartService {
 
 
     @Transactional
-    public CartResponseDTO addToCart(Long customerId, AddToCartDTO dto) {
+    public CartResponseDTO addToCart(Long userId, AddToCartDTO dto) {
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        Cart cart = cartRepository.findByCustomerId(customerId)
+        Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> Cart.builder()
-                        .customerId(customerId)
+                        .userId(userId)
                         .totalItems(0L)
                         .totalAmount(0L)
                         .build());
@@ -75,7 +75,7 @@ public class CartService {
 
 
     public CartResponseDTO getCart(Long customerId) {
-        Cart cart = cartRepository.findByCustomerId(customerId)
+        Cart cart = cartRepository.findByUserId(customerId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
         return mapToResponse(cart);
     }
@@ -93,7 +93,7 @@ public class CartService {
 
         return CartResponseDTO.builder()
                 .cartId(cart.getCartId())
-                .customerId(cart.getCustomerId())
+                .userId(cart.getUserId())
                 .totalItems(cart.getTotalItems())
                 .totalAmount(cart.getTotalAmount())
                 .items(itemDTOs)

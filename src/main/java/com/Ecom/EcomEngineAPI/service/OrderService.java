@@ -92,7 +92,7 @@ public class OrderService {
 
         // Step 5: Create Mock Payment
         Payment payment = Payment.builder()
-                .orderId(String.valueOf(savedOrder.getOrderId()))
+                .orderReference(String.valueOf(savedOrder.getOrderId())) // ✅ updated field name
                 .userId(dto.getUserId())
                 .amount(totalAmount)
                 .paymentMode(dto.getPaymentMode())
@@ -105,7 +105,7 @@ public class OrderService {
         savedOrder.setPayment(payment);
 
         // Step 6: Update Cart Total if any cart remains
-        Cart userCart = cartRepository.findByCustomerId(dto.getUserId()).orElse(null);
+        Cart userCart = cartRepository.findByUserId(dto.getUserId()).orElse(null);
         if (userCart != null) {
             Long newTotal = userCart.getCartItems().stream()
                     .mapToLong(ci -> ci.getProduct().getPrice() * ci.getQuantity())
