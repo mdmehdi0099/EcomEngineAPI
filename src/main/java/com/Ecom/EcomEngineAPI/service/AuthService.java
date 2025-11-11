@@ -56,9 +56,7 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-
         User u = userRepository.findByEmail(req.getEmail());
-
 
         // Build claims to include requested fields
         Map<String, Object> claims = new HashMap<>();

@@ -1,10 +1,7 @@
 package com.Ecom.EcomEngineAPI.controller;
 
 import com.Ecom.EcomEngineAPI.dto.*;
-import com.Ecom.EcomEngineAPI.entity.Brand;
-import com.Ecom.EcomEngineAPI.entity.Category;
-import com.Ecom.EcomEngineAPI.entity.Role;
-import com.Ecom.EcomEngineAPI.entity.User;
+import com.Ecom.EcomEngineAPI.entity.*;
 import com.Ecom.EcomEngineAPI.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator;
@@ -41,7 +38,14 @@ public class AdminController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CartService cartService;
 
+    @Autowired
+    private AddressService addressService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     //registerSellerUser
     @PostMapping("/registerSellerUser")
@@ -256,6 +260,53 @@ public class AdminController {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return ResponseEntity.ok(dto);
     }
+
+
+    //Add to cart
+    @PostMapping("/cart/{customerId}/add")
+    public ResponseEntity<CartResponseDTO> addToCart(@PathVariable Long customerId,
+                                                     @RequestBody AddToCartDTO dto) {
+        CartResponseDTO response = cartService.addToCart(customerId, dto);
+        return ResponseEntity.ok(response);
+    }
+    //get cart items
+    @GetMapping("/cart/{customerId}")
+    public ResponseEntity<CartResponseDTO> getCart(@PathVariable Long customerId) {
+        CartResponseDTO response = cartService.getCart(customerId);
+        return ResponseEntity.ok(response);
+    }
+
+    //add the address
+    @PostMapping("/address/add")
+    public ResponseEntity<AddressResponseDTO> addAddress(@RequestBody AddressCreateDTO dto) {
+        AddressResponseDTO response = addressService.addAddress(dto);
+        return ResponseEntity.status(201).body(response);
+    }
+    //get the address
+    @GetMapping("/address/user/{userId}")
+    public ResponseEntity<List<AddressResponseDTO>> getAddresses(@PathVariable Long userId) {
+        return ResponseEntity.ok(addressService.getAddressesByUser(userId));
+    }
+    //get the default address
+    @GetMapping("/address/user/{userId}/default")
+    public ResponseEntity<AddressResponseDTO> getDefaultAddress(@PathVariable Long userId) {
+        return ResponseEntity.ok(addressService.getDefaultAddress(userId));
+    }
+
+
+    //payment
+    @PostMapping("/payment/process")
+    public ResponseEntity<PaymentResponseDTO> processPayment(@RequestBody PaymentRequestDTO dto) {
+        PaymentResponseDTO response = paymentService.processPayment(dto);
+        return ResponseEntity.status(201).body(response);
+    }
+    //get the payment list by status
+    @GetMapping("/payment/status/{status}")
+    public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByStatus(@PathVariable PaymentStatus status) {
+        List<PaymentResponseDTO> payments = paymentService.getPaymentsByStatus(status);
+        return ResponseEntity.ok(payments);
+    }
+
 
 
 
