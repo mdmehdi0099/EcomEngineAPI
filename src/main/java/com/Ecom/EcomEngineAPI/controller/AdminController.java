@@ -47,6 +47,9 @@ public class AdminController {
     @Autowired
     private PaymentService paymentService;
 
+    @Autowired
+    private OrderService orderService;
+
     //registerSellerUser
     @PostMapping("/registerSellerUser")
     public ResponseEntity<?> registerSellerUser(@RequestBody RegisterRequest request) {
@@ -308,6 +311,23 @@ public class AdminController {
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByStatus(@PathVariable PaymentStatus status) {
         List<PaymentResponseDTO> payments = paymentService.getPaymentsByStatus(status);
         return ResponseEntity.ok(payments);
+    }
+
+    //place an order
+    @PostMapping("/oder/place")
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO dto) {
+        Order order = orderService.placeOrder(dto);
+        return ResponseEntity.status(201).body(order);
+    }
+    //get orders by userId
+    @GetMapping("/oder/user/{userId}")
+    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(orderService.getOrdersByUser(userId));
+    }
+    //get orders by status
+    @GetMapping("/oder/status/{status}")
+    public ResponseEntity<List<Order>> getOrdersByStatus(@PathVariable OrderStatus status) {
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status));
     }
 
 
