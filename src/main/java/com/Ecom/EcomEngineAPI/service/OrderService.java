@@ -32,6 +32,9 @@ public class OrderService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private PaymentService paymentService;
+
 
     @Transactional
     public Order placeOrder(OrderRequestDTO dto) {
@@ -82,10 +85,11 @@ public class OrderService {
                 .shippingAddress(address)
                 .status(OrderStatus.CONFIRMED)
                 .totalAmount(totalAmount)
-                .paid(true)
+                .items(orderItems)
+                .paid(false)
                 .build();
 
-        order.setItems(orderItems);
+        //order.setItems(orderItems);
         orderItems.forEach(item -> item.setOrder(order));
 
         Order savedOrder = orderRepository.save(order);

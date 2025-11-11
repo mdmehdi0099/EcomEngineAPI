@@ -293,6 +293,8 @@ public class AdminController {
         return ResponseEntity.ok(addressService.getDefaultAddress(userId));
     }
 
+    //update address
+
 
     //payment
     @PostMapping("/payment/process")
@@ -300,6 +302,7 @@ public class AdminController {
         PaymentResponseDTO response = paymentService.processPayment(dto);
         return ResponseEntity.status(201).body(response);
     }
+
     //get the payment list by status
     @GetMapping("/payment/status/{status}")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByStatus(@PathVariable PaymentStatus status) {

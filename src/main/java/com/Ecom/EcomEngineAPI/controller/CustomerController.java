@@ -126,6 +126,7 @@ public class CustomerController {
         PaymentResponseDTO response = paymentService.processPayment(dto);
         return ResponseEntity.status(201).body(response);
     }
+
     //place an order
     @PostMapping("/oder/place")
     public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO dto) {

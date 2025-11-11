@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,18 +32,23 @@ public class CartService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseGet(() -> Cart.builder()
+                .orElseGet(() ->{
+                    Cart newCart=Cart.builder()
                         .userId(userId)
                         .totalItems(0L)
                         .totalAmount(0L)
-                        .build());
+                        .cartItems(new ArrayList<>())
+                        .build();
+                    return newCart;
+                        });
+        if (cart.getCartItems() == null) {
+            cart.setCartItems(new ArrayList<>());
+        }
 
-        CartItem existingItem = cart.getCartItems() != null
-                ? cart.getCartItems().stream()
+        CartItem existingItem = cart.getCartItems().stream()
                 .filter(ci -> ci.getProduct().getProductId().equals(dto.getProductId()))
                 .findFirst()
-                .orElse(null)
-                : null;
+                .orElse(null);
 
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + dto.getQuantity());
@@ -69,8 +75,9 @@ public class CartService {
         cart.setTotalAmount(totalAmount);
         cart.setTotalItems(totalItems);
 
-        cartRepository.save(cart);
-        return mapToResponse(cart);
+        Cart savedCart = cartRepository.save(cart);
+
+        return mapToResponse(savedCart);
     }
 
 

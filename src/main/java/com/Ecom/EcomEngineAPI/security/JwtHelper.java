@@ -15,7 +15,7 @@ import java.util.Map;
 public class JwtHelper {
     // In production load from environment/config; must be at least 256 bits for HS256/HS512
     private static final String SECRET_KEY = "MyNameIsMehdiHassanMyNameIsMehdiHassanMyNameIsMehdiHassanMyNameIsMehdiHassanMyNameIsMehdiHassanMyNameIsMehdiHassanMyNameIsMehdiHassanMyNameIsMehdiHassanMyNameIsMehdiHassan";
-    private static final long EXPIRATION_MS = 1000 * 60 * 60 * 6; // 6 hours
+    private static final long EXPIRATION_MS = 1000 * 60 * 60 * 200; // 200 hours
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
