@@ -90,6 +90,7 @@ public class UserService {
         //get the user details
         User user=userRepository.findByEmail(username);
 
+
         userProfileResponseDTO= UserProfileResponseDTO.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())

@@ -1,6 +1,8 @@
 package com.Ecom.EcomEngineAPI.controller;
 
 import com.Ecom.EcomEngineAPI.dto.*;
+import com.Ecom.EcomEngineAPI.entity.Order;
+import com.Ecom.EcomEngineAPI.entity.OrderStatus;
 import com.Ecom.EcomEngineAPI.entity.Role;
 import com.Ecom.EcomEngineAPI.repo.CategoryRepository;
 import com.Ecom.EcomEngineAPI.service.*;
@@ -36,6 +38,9 @@ public class SellerController {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private OrderService orderService;
 
     //seller profile
     @GetMapping("/myprofile")
@@ -158,6 +163,33 @@ public class SellerController {
     public ResponseEntity<PaymentResponseDTO> processPayment(@RequestBody PaymentRequestDTO dto) {
         PaymentResponseDTO response = paymentService.processPayment(dto);
         return ResponseEntity.status(201).body(response);
+    }
+
+    //place an order
+    @PostMapping("/oder/place")
+    public ResponseEntity<OrderResponseDTO> placeOrder(@RequestBody OrderRequestDTO dto) {
+        Order order = orderService.placeOrder(dto);
+        OrderResponseDTO responsedto=orderService.convertToDTO(order);
+        return ResponseEntity.status(201).body(responsedto);
+    }
+
+    //get orders by userId
+    @GetMapping("/oder/user/{userId}")
+    public ResponseEntity<List<OrderResponseDTO>> getOrdersByUser(@PathVariable Long userId) {
+        List<OrderResponseDTO> response=orderService.getOrdersByUserDTO(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    //get orders by status
+    @GetMapping("/oder/status/{status}")
+    public ResponseEntity<List<Order>> getOrdersByStatus(@PathVariable OrderStatus status) {
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status));
+    }
+    //cancel order api
+    @PutMapping("/order/{orderId}/cancel")
+    public ResponseEntity<OrderResponseDTO> cancelOrder(@PathVariable Long orderId) {
+        OrderResponseDTO response = orderService.cancelOrder(orderId);
+        return ResponseEntity.ok(response);
     }
 
 

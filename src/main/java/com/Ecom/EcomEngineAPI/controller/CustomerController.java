@@ -129,20 +129,29 @@ public class CustomerController {
 
     //place an order
     @PostMapping("/oder/place")
-    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO dto) {
+    public ResponseEntity<OrderResponseDTO> placeOrder(@RequestBody OrderRequestDTO dto) {
         Order order = orderService.placeOrder(dto);
-        return ResponseEntity.status(201).body(order);
+        OrderResponseDTO responsedto=orderService.convertToDTO(order);
+        return ResponseEntity.status(201).body(responsedto);
     }
+
     //get orders by userId
     @GetMapping("/oder/user/{userId}")
     public ResponseEntity<List<OrderResponseDTO>> getOrdersByUser(@PathVariable Long userId) {
         List<OrderResponseDTO> response=orderService.getOrdersByUserDTO(userId);
         return ResponseEntity.ok(response);
     }
+
     //get orders by status
     @GetMapping("/oder/status/{status}")
     public ResponseEntity<List<Order>> getOrdersByStatus(@PathVariable OrderStatus status) {
         return ResponseEntity.ok(orderService.getOrdersByStatus(status));
+    }
+    //cancel order api
+    @PutMapping("/order/{orderId}/cancel")
+    public ResponseEntity<OrderResponseDTO> cancelOrder(@PathVariable Long orderId) {
+        OrderResponseDTO response = orderService.cancelOrder(orderId);
+        return ResponseEntity.ok(response);
     }
 
 
