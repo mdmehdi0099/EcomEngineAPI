@@ -90,6 +90,7 @@ public class CartService {
     private CartResponseDTO mapToResponse(Cart cart) {
         List<CartItemResponseDTO> itemDTOs = cart.getCartItems().stream()
                 .map(item -> CartItemResponseDTO.builder()
+                        .cartItemId(item.getCartItemId())
                         .productId(item.getProduct().getProductId())
                         .productName(item.getProduct().getName())
                         .pricePerUnit(item.getPricePerUnit())

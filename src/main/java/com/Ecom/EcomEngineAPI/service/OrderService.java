@@ -1,12 +1,13 @@
 package com.Ecom.EcomEngineAPI.service;
 
-import com.Ecom.EcomEngineAPI.dto.OrderRequestDTO;
+import com.Ecom.EcomEngineAPI.dto.*;
 import com.Ecom.EcomEngineAPI.entity.*;
 import com.Ecom.EcomEngineAPI.repo.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,7 +48,11 @@ public class OrderService {
 
         // ✅ Step 2: If order is from Cart
         if (dto.getCartItemIds() != null && !dto.getCartItemIds().isEmpty()) {
-            List<CartItem> cartItems = cartItemRepository.findAllById(dto.getCartItemIds());
+            // Fetch only items belonging to this user's cart
+            List<CartItem> cartItems = cartItemRepository.findAllById(dto.getCartItemIds())
+                    .stream()
+                    .filter(ci -> ci.getCart() != null && ci.getCart().getUserId().equals(dto.getUserId()))
+                    .toList();
 
             if (cartItems.isEmpty()) {
                 throw new RuntimeException("No valid cart items found for this user");
@@ -60,7 +65,8 @@ public class OrderService {
                 orderItems.add(OrderItem.builder()
                         .product(product)
                         .quantity(cartItem.getQuantity())
-                        .price(subtotal) // ✅ price is total price for this item
+                        .price(product.getPrice())
+                        .totalPrice(subtotal)// ✅ price is total price for this item
                         .build());
 
                 totalAmount += subtotal;
@@ -80,9 +86,9 @@ public class OrderService {
             orderItems.add(OrderItem.builder()
                     .product(product)
                     .quantity(dto.getQuantity())
-                    .price(subtotal)
+                    .price(product.getPrice())
+                    .totalPrice(subtotal)
                     .build());
-
             totalAmount = subtotal;
         }
         else {
@@ -103,19 +109,18 @@ public class OrderService {
         orderItems.forEach(item -> item.setOrder(order));
 
         Order savedOrder = orderRepository.save(order);
-
-        // Step 5: Create Mock Payment
-         Payment payment = Payment.builder()
-         .orderReference(savedOrder.getOrderId() + "-" + UUID.randomUUID()) // ✅ updated field name
-         .userId(dto.getUserId())
-         .amount(totalAmount)
-         .paymentMode(dto.getPaymentMode())
-         .paymentReference(UUID.randomUUID().toString())
-         .status(PaymentStatus.SUCCESS)
-         .transactionNote("Mock payment success")
-         .build();
-
-         paymentRepository.save(payment);
+        // Step 4: Call PaymentService to process payment
+        PaymentRequestDTO paymentRequest = PaymentRequestDTO.builder()
+                .orderId(savedOrder.getOrderId())
+                .userId(dto.getUserId())
+                .paymentMode(dto.getPaymentMode())
+                .amount(totalAmount)
+                .transactionNote("Order Payment")
+                .build();
+        PaymentResponseDTO paymentResponse = paymentService.processPayment(paymentRequest);
+        // Step 5: Fetch saved payment from DB
+        Payment payment = paymentRepository.findById(paymentResponse.getPaymentId())
+                .orElseThrow(() -> new RuntimeException("Payment record not found"));
 
         // ✅ Step 6: Update order with payment result
         savedOrder.setPayment(payment);
@@ -141,12 +146,76 @@ public class OrderService {
     }
 
     // ------------------- Retrieval methods ------------------- //
+    public OrderResponseDTO convertToDTO(Order order){
+        List<OrderItemResponseDTO> itemDTOs=order.getItems().stream().map(item->OrderItemResponseDTO.builder()
+                .orderItemId(item.getOrderItemId())
+                .productId(item.getProduct().getProductId())
+                .productName(item.getProduct().getName())
+                .price(item.getProduct().getPrice())
+                .quantity(item.getQuantity())
+                .totalPrice(item.getPrice()*item.getQuantity())
+                .build()
+            ).toList();
+        return OrderResponseDTO.builder()
+                .orderId(order.getOrderId())
+                .userId(order.getUserId())
+                .shippingAddress(order.getShippingAddress())
+                .status(order.getStatus())
+                .totalAmount(order.getTotalAmount())
+                .paid(order.isPaid())
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
+                .items(itemDTOs)
+                .build();
+    }
+    public List<OrderResponseDTO> getOrdersByUserDTO(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
 
-    public List<Order> getOrdersByUser(Long userId) {
-        return orderRepository.findByUserId(userId);
+        return orders.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     public List<Order> getOrdersByStatus(OrderStatus status) {
         return orderRepository.findByStatus(status);
     }
+
+    //cancel order
+    @Transactional
+    public OrderResponseDTO cancelOrder(Long orderId) {
+
+        // 1️⃣ Fetch order
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // 2️⃣ Validate if order can be cancelled
+        if (order.getStatus() != OrderStatus.CONFIRMED) {
+            throw new RuntimeException("Only confirmed orders can be cancelled.");
+        }
+
+        if (order.isPaid() == false) {
+            throw new RuntimeException("Cannot cancel unpaid order.");
+        }
+
+        // 3️⃣ Update order status
+        order.setStatus(OrderStatus.CANCELLED);
+        order.setPaid(false);
+        order.setCancelledAt(LocalDateTime.now());
+
+        // 4️⃣ Optional: Update payment status if needed
+        if (order.getPayment() != null) {
+            Payment payment = order.getPayment();
+            payment.setStatus(PaymentStatus.REFUNDED);
+            paymentRepository.save(payment);
+        }
+
+        Order saved = orderRepository.save(order);
+
+        // 5️⃣ Convert to response DTO
+        return convertToDTO(saved);
+    }
+
+
+
+
 }

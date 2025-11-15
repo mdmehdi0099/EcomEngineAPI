@@ -29,8 +29,8 @@ public class PaymentService {
     @Transactional
     public PaymentResponseDTO processPayment(PaymentRequestDTO dto) {
         // 1️⃣ Fetch order
-//        Order order = orderRepository.findById(dto.getOrderId())
-//                .orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(dto.getOrderId())
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
 
         // 2️⃣ Mock payment processing
@@ -53,13 +53,13 @@ public class PaymentService {
         // 4️⃣ Update order if payment success
         if (mockStatus == PaymentStatus.SUCCESS) {
 
-//            order.setPaid(true);
-//            order.setStatus(OrderStatus.CONFIRMED);
-//            orderRepository.save(order);
+            order.setPaid(true);
+            order.setStatus(OrderStatus.CONFIRMED);
+            orderRepository.save(order);
 
         } else if (mockStatus == PaymentStatus.FAILED) {
 
-            //order.setStatus(OrderStatus.PENDING);
+            order.setStatus(OrderStatus.PENDING);
 
         }
 

@@ -135,8 +135,9 @@ public class CustomerController {
     }
     //get orders by userId
     @GetMapping("/oder/user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(orderService.getOrdersByUser(userId));
+    public ResponseEntity<List<OrderResponseDTO>> getOrdersByUser(@PathVariable Long userId) {
+        List<OrderResponseDTO> response=orderService.getOrdersByUserDTO(userId);
+        return ResponseEntity.ok(response);
     }
     //get orders by status
     @GetMapping("/oder/status/{status}")

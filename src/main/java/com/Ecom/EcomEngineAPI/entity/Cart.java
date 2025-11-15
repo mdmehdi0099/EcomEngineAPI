@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "cart")
+@EntityListeners(AuditingEntityListener.class)
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

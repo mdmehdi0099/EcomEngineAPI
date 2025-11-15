@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CartItemResponseDTO {
+    private Long cartItemId;
     private Long productId;
     private String productName;
     private Long pricePerUnit;
