@@ -2,8 +2,11 @@ package com.Ecom.EcomEngineAPI.controller;
 
 import com.Ecom.EcomEngineAPI.dto.CategoryResponseDTO;
 import com.Ecom.EcomEngineAPI.dto.ProductResponseDTO;
+import com.Ecom.EcomEngineAPI.dto.ReviewRequestDTO;
+import com.Ecom.EcomEngineAPI.dto.ReviewResponseDTO;
 import com.Ecom.EcomEngineAPI.service.CategoryService;
 import com.Ecom.EcomEngineAPI.service.ProductService;
+import com.Ecom.EcomEngineAPI.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +26,9 @@ public class FreeController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     //list of categories
     @GetMapping("/categories")
@@ -65,5 +71,11 @@ public class FreeController {
         return ResponseEntity.ok(dto);
     }
 
+    //review system
+    //get review for a product
+    @GetMapping("/review/product/{productid}")
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewByProductId(@PathVariable Long productId){
+        return ResponseEntity.ok(reviewService.getReviewByProduct(productId));
+    }
 
 }

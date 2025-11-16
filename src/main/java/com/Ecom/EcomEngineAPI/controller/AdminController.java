@@ -51,6 +51,9 @@ public class AdminController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     //registerSellerUser
     @PostMapping("/registerSellerUser")
     public ResponseEntity<?> registerSellerUser(@RequestBody RegisterRequest request) {
@@ -339,6 +342,30 @@ public class AdminController {
     public ResponseEntity<OrderResponseDTO> cancelOrder(@PathVariable Long orderId) {
         OrderResponseDTO response = orderService.cancelOrder(orderId);
         return ResponseEntity.ok(response);
+    }
+
+    //review system
+    //create review
+    @PostMapping("/review/create")
+    public ResponseEntity<ReviewResponseDTO> createReview(@RequestBody ReviewRequestDTO dto){
+        return ResponseEntity.status(201).body(reviewService.createReview(dto));
+    }
+
+    //get review for a product
+    @GetMapping("/review/product/{productid}")
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewByProductId(@PathVariable Long productId){
+        return ResponseEntity.ok(reviewService.getReviewByProduct(productId));
+    }
+
+    //get review by user
+    @GetMapping("/review/user/{userId}")
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewByUserId(@PathVariable Long userId){
+        return ResponseEntity.ok(reviewService.getReviewByUser(userId));
+    }
+    //enable disable review
+    @PutMapping("/review/{reviewId}")
+    public ResponseEntity<ReviewResponseDTO> updateReviewStatus(@PathVariable Long reviewId,@RequestParam boolean status){
+        return ResponseEntity.ok(reviewService.enableDisableReview(reviewId,status));
     }
 
 
