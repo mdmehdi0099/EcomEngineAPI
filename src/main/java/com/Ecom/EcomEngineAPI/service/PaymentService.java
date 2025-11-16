@@ -79,7 +79,8 @@ public class PaymentService {
     // Mock payment simulation logic
     private PaymentStatus mockPaymentProcessing(String mode) {
         // Simulate random success/failure (you can make it deterministic if you like)
-        return Math.random() > 0.2 ? PaymentStatus.SUCCESS : PaymentStatus.FAILED;
+        //return Math.random() > 0.2 ? PaymentStatus.SUCCESS : PaymentStatus.FAILED;
+        return PaymentStatus.SUCCESS;
     }
 
 
