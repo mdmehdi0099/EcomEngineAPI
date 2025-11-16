@@ -41,6 +41,9 @@ public class CustomerController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     //customer profile
     @GetMapping("/myprofile")
     public ResponseEntity<UserProfileResponseDTO> viewMyProfile(HttpServletRequest request){
@@ -126,21 +129,56 @@ public class CustomerController {
         PaymentResponseDTO response = paymentService.processPayment(dto);
         return ResponseEntity.status(201).body(response);
     }
+
     //place an order
     @PostMapping("/oder/place")
-    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO dto) {
+    public ResponseEntity<OrderResponseDTO> placeOrder(@RequestBody OrderRequestDTO dto) {
         Order order = orderService.placeOrder(dto);
-        return ResponseEntity.status(201).body(order);
+        OrderResponseDTO responsedto=orderService.convertToDTO(order);
+        return ResponseEntity.status(201).body(responsedto);
     }
+
     //get orders by userId
     @GetMapping("/oder/user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(orderService.getOrdersByUser(userId));
+    public ResponseEntity<List<OrderResponseDTO>> getOrdersByUser(@PathVariable Long userId) {
+        List<OrderResponseDTO> response=orderService.getOrdersByUserDTO(userId);
+        return ResponseEntity.ok(response);
     }
+
     //get orders by status
     @GetMapping("/oder/status/{status}")
     public ResponseEntity<List<Order>> getOrdersByStatus(@PathVariable OrderStatus status) {
         return ResponseEntity.ok(orderService.getOrdersByStatus(status));
+    }
+    //cancel order api
+    @PutMapping("/order/{orderId}/cancel")
+    public ResponseEntity<OrderResponseDTO> cancelOrder(@PathVariable Long orderId) {
+        OrderResponseDTO response = orderService.cancelOrder(orderId);
+        return ResponseEntity.ok(response);
+    }
+
+    //review system
+    //create review
+    @PostMapping("/review/create")
+    public ResponseEntity<ReviewResponseDTO> createReview(@RequestBody ReviewRequestDTO dto){
+        return ResponseEntity.status(201).body(reviewService.createReview(dto));
+    }
+
+    //get review for a product
+    @GetMapping("/review/product/{productid}")
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewByProductId(@PathVariable Long productId){
+        return ResponseEntity.ok(reviewService.getReviewByProduct(productId));
+    }
+
+    //get review by user
+    @GetMapping("/review/user/{userId}")
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewByUserId(@PathVariable Long userId){
+        return ResponseEntity.ok(reviewService.getReviewByUser(userId));
+    }
+    //enable disable review
+    @PutMapping("/review/{reviewId}")
+    public ResponseEntity<ReviewResponseDTO> updateReviewStatus(@PathVariable Long reviewId,@RequestParam boolean status){
+        return ResponseEntity.ok(reviewService.enableDisableReview(reviewId,status));
     }
 
 

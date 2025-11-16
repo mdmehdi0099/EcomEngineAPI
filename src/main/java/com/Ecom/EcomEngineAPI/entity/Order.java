@@ -1,10 +1,13 @@
 package com.Ecom.EcomEngineAPI.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +19,8 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "orders")
+@JsonIgnoreProperties({"items", "payment"})
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
 
     @Id
@@ -33,6 +38,7 @@ public class Order {
 
     private Long totalAmount;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 
@@ -48,4 +54,6 @@ public class Order {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    private LocalDateTime cancelledAt;
 }

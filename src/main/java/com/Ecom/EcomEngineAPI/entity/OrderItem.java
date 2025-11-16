@@ -1,6 +1,9 @@
 package com.Ecom.EcomEngineAPI.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,11 +14,13 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "order_items")
+@JsonIgnoreProperties({"order"})
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -26,6 +31,7 @@ public class OrderItem {
 
     private Long quantity;
     private Long price;
+    private Long totalPrice;
 
 
 }

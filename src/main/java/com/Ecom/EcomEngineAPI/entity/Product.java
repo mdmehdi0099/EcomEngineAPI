@@ -1,10 +1,10 @@
 package com.Ecom.EcomEngineAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 })
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     @Column(nullable = false)
@@ -31,10 +31,12 @@ public class Product {
     private Long price;
     private String pictureURL;
 
+    @JsonIgnoreProperties({"products"})
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @JsonIgnoreProperties({"products"})
     @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
