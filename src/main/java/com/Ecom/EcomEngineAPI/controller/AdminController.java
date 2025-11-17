@@ -333,7 +333,7 @@ public class AdminController {
     }
 
     //get orders by status
-    @GetMapping("/oder/status/{status}")
+    @GetMapping("/order/status/{status}")
     public ResponseEntity<List<Order>> getOrdersByStatus(@PathVariable OrderStatus status) {
         return ResponseEntity.ok(orderService.getOrdersByStatus(status));
     }
