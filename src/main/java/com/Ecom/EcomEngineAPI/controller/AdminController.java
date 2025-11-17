@@ -318,7 +318,7 @@ public class AdminController {
     }
 
     //place an order
-    @PostMapping("/oder/place")
+    @PostMapping("/order/place")
     public ResponseEntity<OrderResponseDTO> placeOrder(@RequestBody OrderRequestDTO dto) {
         Order order = orderService.placeOrder(dto);
         OrderResponseDTO responsedto=orderService.convertToDTO(order);
@@ -352,7 +352,7 @@ public class AdminController {
     }
 
     //get review for a product
-    @GetMapping("/review/product/{productid}")
+    @GetMapping("/review/product/{productId}")
     public ResponseEntity<List<ReviewResponseDTO>> getReviewByProductId(@PathVariable Long productId){
         return ResponseEntity.ok(reviewService.getReviewByProduct(productId));
     }

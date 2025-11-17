@@ -36,8 +36,12 @@ public class ReviewService {
 
     //getReviewsByProduct
     public List<ReviewResponseDTO> getReviewByProduct(Long productId){
-        return reviewRepository.findByProductId(productId)
-                .stream()
+        if (productId==null){
+            throw new IllegalArgumentException("Product ID cannot be null");
+        }
+        List<Review> reviews=reviewRepository.findByProductId(productId);
+
+        return reviews.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
