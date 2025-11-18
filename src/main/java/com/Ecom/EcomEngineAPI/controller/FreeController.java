@@ -73,7 +73,7 @@ public class FreeController {
 
     //review system
     //get review for a product
-    @GetMapping("/review/product/{productid}")
+    @GetMapping("/review/product/{productId}")
     public ResponseEntity<List<ReviewResponseDTO>> getReviewByProductId(@PathVariable Long productId){
         return ResponseEntity.ok(reviewService.getReviewByProduct(productId));
     }
